@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FogVision — Intelligent Detection Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --bg: #04080f;
+  --surface: #080d17;
+  --surface2: #0b1221;
+  --border: rgba(255,255,255,.07);
+  --border-glow: rgba(96,200,235,.18);
+  --ice: #a8e6f0;
+  --ice2: #60c8eb;
+  --ice3: #2196c4;
+  --white: #f4f8fb;
+  --muted: #7a96b0;
+  --muted2: #536880;
+  --text: #c8dae8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% -5%, rgba(96,200,235,.11), transparent),
+    radial-gradient(ellipse 40% 30% at 80% 70%, rgba(33,150,196,.06), transparent),
+    radial-gradient(ellipse 60% 40% at 10% 90%, rgba(168,230,240,.04), transparent);
+}
+
+.noise {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.grid-lines {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(96,200,235,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(96,200,235,.025) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; width: 100%; z-index: 200;
+  backdrop-filter: blur(28px) saturate(160%);
+  background: rgba(4,8,15,.72);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1340px; margin: 0 auto; padding: 1.1rem 3rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600; font-size: 1.7rem; letter-spacing: .04em;
+  color: var(--white); text-decoration: none;
+}
+.logo span { color: var(--ice2); font-style: italic; }
+.nav-links { display: flex; gap: 2.2rem; list-style: none; }
+.nav-links a {
+  text-decoration: none; font-size: .78rem; font-weight: 500;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+  transition: color .25s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-cta {
+  padding: .62rem 1.4rem; border-radius: 8px;
+  background: transparent; border: 1px solid var(--border-glow);
+  color: var(--ice); font-size: .78rem; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase; text-decoration: none;
+  transition: background .25s, border-color .25s;
+}
+.nav-cta:hover { background: rgba(96,200,235,.08); border-color: var(--ice2); }
+
+/* HERO */
+#hero {
+  position: relative; z-index: 1;
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 10rem 2rem 6rem;
+}
+.hero-line {
+  display: inline-flex; align-items: center; gap: .7rem;
+  margin-bottom: 2.2rem;
+  font-size: .72rem; font-weight: 600; letter-spacing: .25em;
+  text-transform: uppercase; color: var(--ice2);
+}
+.hero-line::before, .hero-line::after {
+  content: ''; flex: 1; width: 48px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ice3), transparent);
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(5rem, 10vw, 10rem);
+  font-weight: 300; line-height: .88; letter-spacing: -.02em;
+  color: var(--white);
+}
+.hero-title em {
+  font-style: italic; font-weight: 300;
+  background: linear-gradient(125deg, var(--ice), var(--ice3) 60%, #7ecfea);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-sub {
+  max-width: 680px; margin: 2.2rem auto 3rem;
+  font-size: 1.18rem; line-height: 1.95; color: var(--muted);
+  font-weight: 300; letter-spacing: .01em;
+}
+.hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: .6rem;
+  padding: 1rem 2.2rem; border-radius: 8px; text-decoration: none;
+  background: linear-gradient(135deg, var(--ice2), var(--ice3));
+  color: #03111e; font-size: .9rem; font-weight: 700;
+  letter-spacing: .06em; transition: opacity .2s, transform .2s;
+}
+.btn-primary:hover { opacity: .88; transform: translateY(-1px); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: .6rem;
+  padding: 1rem 2.2rem; border-radius: 8px; text-decoration: none;
+  border: 1px solid var(--border-glow); color: var(--text);
+  font-size: .9rem; font-weight: 500; letter-spacing: .06em;
+  background: rgba(96,200,235,.04); transition: background .2s, border-color .2s;
+}
+.btn-secondary:hover { background: rgba(96,200,235,.09); border-color: var(--ice2); }
+.scroll-hint {
+  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  color: var(--muted2); font-size: .72rem; letter-spacing: .18em; text-transform: uppercase;
+  animation: bob 2.4s ease-in-out infinite;
+}
+@keyframes bob { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+/* SECTIONS */
+.section {
+  position: relative; z-index: 1;
+  max-width: 1340px; margin: 0 auto; padding: 8rem 3rem;
+}
+.s-eyebrow {
+  font-size: .72rem; font-weight: 600; letter-spacing: .24em;
+  text-transform: uppercase; color: var(--ice2); margin-bottom: 1.2rem;
+  display: flex; align-items: center; gap: .6rem;
+}
+.s-eyebrow::after { content: ''; flex: 1; max-width: 40px; height: 1px; background: var(--ice3); }
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.8rem, 5.5vw, 5.5rem);
+  font-weight: 300; line-height: 1.0; letter-spacing: -.02em;
+  color: var(--white); margin-bottom: 1.4rem;
+}
+.section-title em { font-style: italic; color: var(--ice); }
+.section-desc {
+  max-width: 820px; color: var(--muted); line-height: 1.95;
+  font-size: 1.1rem; font-weight: 300;
+}
+.divider {
+  position: relative; z-index: 1;
+  height: 1px; max-width: 1340px; margin: 0 auto;
+  background: linear-gradient(90deg, transparent, var(--border-glow), transparent);
+}
+
+/* INFO CARDS */
+.info-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; margin-top: 3rem;
+}
+.info-box {
+  padding: 2rem 1.8rem; border: 1px solid var(--border); border-radius: 18px;
+  background: linear-gradient(160deg, rgba(11,18,33,.9), rgba(6,11,22,.9));
+  transition: border-color .3s, transform .3s;
+}
+.info-box:hover { border-color: var(--border-glow); transform: translateY(-3px); }
+.info-box-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  border: 1px solid var(--border-glow); background: rgba(96,200,235,.06);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.4rem; color: var(--ice2); font-size: 1rem;
+}
+.info-box h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 400; color: var(--white); margin-bottom: .75rem;
+}
+.info-box p { color: var(--muted); line-height: 1.9; font-size: 1rem; font-weight: 300; }
+
+/* STORY GRID */
+.story-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.4rem; margin-top: 2.8rem;
+}
+.story-box {
+  padding: 2.2rem 2rem; border: 1px solid var(--border); border-radius: 18px;
+  background: rgba(8,14,26,.7); position: relative; overflow: hidden;
+  transition: border-color .3s;
+}
+.story-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-glow), transparent);
+}
+.story-box:hover { border-color: rgba(96,200,235,.25); }
+.story-num {
+  font-family: 'Cormorant Garamond', serif; font-size: 3.2rem;
+  font-weight: 300; color: rgba(96,200,235,.12); line-height: 1; margin-bottom: .5rem;
+}
+.story-box h4 {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.6rem;
+  font-weight: 400; color: var(--white); margin-bottom: .8rem;
+}
+.story-box p { color: var(--muted); line-height: 1.9; font-size: 1rem; font-weight: 300; }
+
+/* ── DETECTION ── */
+.detect-grid {
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 2rem; margin-top: 3.5rem;
+  align-items: start;
+}
+
+.panel {
+  border: 1px solid var(--border); border-radius: 22px; overflow: hidden;
+  background: linear-gradient(160deg, rgba(10,16,30,.98), rgba(5,10,19,.98));
+  box-shadow: 0 32px 80px rgba(0,0,0,.35);
+}
+.card-head {
+  padding: 1.4rem 1.8rem; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: .9rem;
+}
+.card-head-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.25rem;
+  font-weight: 400; color: var(--white);
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot-ice  { background: var(--ice2); box-shadow: 0 0 10px var(--ice2); }
+.dot-green { background: #4ade80; box-shadow: 0 0 10px #4ade80; }
+
+/* upload zone */
+.upload-zone {
+  margin: 1.8rem; border: 1.5px dashed rgba(168,230,240,.2); border-radius: 16px;
+  background: rgba(6,12,24,.6); min-height: 220px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; text-align: center; padding: 2rem;
+  transition: border-color .3s, background .3s; cursor: pointer;
+}
+.upload-zone:hover,
+.upload-zone.drag-over {
+  border-color: rgba(96,200,235,.5);
+  background: rgba(96,200,235,.05);
+}
+.upload-zone input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.upload-icon {
+  width: 56px; height: 56px; border-radius: 16px;
+  border: 1px solid var(--border-glow); background: rgba(96,200,235,.06);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.2rem; color: var(--ice2); font-size: 1.3rem;
+  transition: background .3s;
+}
+.upload-zone:hover .upload-icon { background: rgba(96,200,235,.14); }
+.upload-copy { color: var(--muted); font-size: 1rem; line-height: 1.7; }
+.upload-copy strong { display: block; color: var(--white); font-size: 1.05rem; margin-bottom: .3rem; font-weight: 500; }
+.upload-note { font-size: .82rem; color: var(--muted2); margin-top: .4rem; letter-spacing: .04em; }
+
+/* selected file name */
+.file-selected-name {
+  margin: 0 1.8rem; padding: .65rem 1rem; border-radius: 10px;
+  background: rgba(96,200,235,.06); border: 1px solid rgba(96,200,235,.15);
+  color: var(--ice2); font-size: .85rem; display: none;
+  align-items: center; gap: .55rem;
+}
+
+/* run button */
+.run-btn {
+  width: calc(100% - 3.6rem); margin: 1rem 1.8rem 1.8rem;
+  padding: 1.1rem 1.4rem; border: none; border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--ice2), var(--ice3));
+  color: #02101c; font-size: 1rem; font-weight: 700;
+  letter-spacing: .06em; transition: opacity .2s, transform .2s;
+  display: flex; align-items: center; justify-content: center; gap: .6rem;
+}
+.run-btn:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
+.run-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+/* results panel */
+.results-panel {
+  border: 1px solid var(--border); border-radius: 22px; overflow: hidden;
+  background: linear-gradient(160deg, rgba(10,16,30,.98), rgba(5,10,19,.98));
+  box-shadow: 0 32px 80px rgba(0,0,0,.35);
+}
+
+.ba-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+}
+.ba-pane {
+  display: flex; flex-direction: column; min-height: 280px;
+}
+.ba-pane + .ba-pane {
+  border-left: 1px solid var(--border);
+}
+.ba-label {
+  padding: .8rem 1.2rem; border-bottom: 1px solid var(--border);
+  font-size: .68rem; text-transform: uppercase; letter-spacing: .22em;
+  color: var(--muted2); font-weight: 600;
+  display: flex; align-items: center; gap: .5rem;
+}
+.ba-label .status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--muted2); transition: background .4s;
+}
+.ba-label.ready .status-dot { background: #4ade80; box-shadow: 0 0 8px #4ade80; }
+
+.ba-content {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 1.2rem; background: rgba(4,8,15,.5);
+}
+.ba-content img, .ba-content video {
+  width: 100%; max-height: 280px; object-fit: contain;
+  border-radius: 10px;
+}
+
+/* empty state */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center;
+  gap: .7rem; color: var(--muted2); text-align: center;
+}
+.empty-state i { font-size: 1.6rem; opacity: .35; }
+.empty-state span { font-size: .9rem; letter-spacing: .04em; }
+
+/* processing overlay */
+.processing-wrap {
+  display: none; flex-direction: column; align-items: center;
+  gap: 1rem; padding: 2rem;
+}
+.processing-wrap.active { display: flex; }
+.spinner {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 2px solid rgba(96,200,235,.15);
+  border-top-color: var(--ice2);
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.processing-wrap p { color: var(--muted); font-size: .9rem; letter-spacing: .06em; }
+
+/* processing shimmer on after pane */
+.shimmer {
+  width: 100%; height: 200px; border-radius: 10px;
+  background: linear-gradient(90deg,
+    rgba(96,200,235,.04) 0%,
+    rgba(96,200,235,.10) 50%,
+    rgba(96,200,235,.04) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* note below detection */
+.detection-note {
+  margin-top: 1.2rem; padding: .9rem 1.4rem;
+  border: 1px solid rgba(96,200,235,.1); border-radius: 12px;
+  background: rgba(96,200,235,.03); color: var(--muted2);
+  font-size: .85rem; line-height: 1.7; letter-spacing: .02em;
+  display: flex; align-items: flex-start; gap: .7rem;
+}
+.detection-note i { color: var(--ice3); margin-top: .15rem; flex-shrink: 0; }
+
+/* FOLLOW */
+.follow-wrap {
+  margin-top: 2.5rem; padding: 2.5rem; border: 1px solid var(--border); border-radius: 20px;
+  background: linear-gradient(135deg, rgba(96,200,235,.06), rgba(33,150,196,.04));
+  position: relative; overflow: hidden;
+}
+.follow-wrap::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(96,200,235,.35), transparent);
+}
+.follow-wrap h4 {
+  font-family: 'Cormorant Garamond', serif; font-size: 2rem;
+  font-weight: 300; color: var(--white); margin-bottom: .8rem;
+}
+.follow-wrap p { color: var(--muted); line-height: 1.9; font-size: 1.05rem; font-weight: 300; max-width: 680px; }
+
+/* FOOTER */
+footer {
+  position: relative; z-index: 1;
+  max-width: 1340px; margin: 0 auto; padding: 3rem 3rem 5rem;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 1.5rem; flex-wrap: wrap;
+}
+.footer-brand {
+  font-family: 'Cormorant Garamond', serif; font-weight: 600;
+  font-size: 1.6rem; color: var(--white); letter-spacing: .04em;
+}
+.footer-brand span { color: var(--ice2); font-style: italic; }
+.footer-copy { color: var(--muted2); font-size: .85rem; margin-top: .4rem; letter-spacing: .04em; }
+.footer-note { color: var(--muted2); font-size: .85rem; line-height: 1.7; max-width: 400px; letter-spacing: .03em; }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp .9s ease forwards; }
+.delay-1 { animation-delay: .15s; opacity: 0; }
+.delay-2 { animation-delay: .30s; opacity: 0; }
+.delay-3 { animation-delay: .45s; opacity: 0; }
+.delay-4 { animation-delay: .60s; opacity: 0; }
+
+/* RESPONSIVE */
+@media (max-width: 960px) {
+  .detect-grid, .info-grid, .story-grid, .ba-grid { grid-template-columns: 1fr; }
+  .ba-pane + .ba-pane { border-left: none; border-top: 1px solid var(--border); }
+  .nav-links { display: none; }
+  .section { padding: 5rem 1.8rem; }
+  .nav-inner { padding: 1rem 1.8rem; }
+  footer { padding: 2.5rem 1.8rem 4rem; }
+}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="grid-lines"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">Fog<span>Vision</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#need">Purpose</a></li>
+      <li><a href="#detection">Detection</a></li>
+      <li><a href="#follow">Follow</a></li>
+    </ul>
+    <a href="#detection" class="nav-cta">Try Demo</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-line fade-up">Computer Vision · Road Safety · Low Visibility</div>
+  <h1 class="hero-title fade-up delay-1">Fog<em>Vision</em></h1>
+  <p class="hero-sub fade-up delay-2">
+    An intelligent detection platform designed to surface road users and obstacles in fog, haze, and low-clarity conditions — where traditional vision fails.
+  </p>
+  <div class="hero-actions fade-up delay-3">
+    <a href="#detection" class="btn-primary"><i class="fas fa-upload"></i> Open Detection</a>
+    <a href="#about" class="btn-secondary"><i class="fas fa-arrow-down"></i> Learn More</a>
+  </div>
+  <div class="scroll-hint fade-up delay-4">
+    <i class="fas fa-chevron-down"></i>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about" class="section">
+  <p class="s-eyebrow">Platform</p>
+  <h2 class="section-title">Clarity where<br><em>visibility fails.</em></h2>
+  <p class="section-desc">
+    Fog, haze, smoke, and low contrast make traditional vision systems less reliable. FogVision restores practical visibility through precise object detection — so humans and intelligent systems can react earlier, and more safely.
+  </p>
+  <div class="info-grid">
+    <div class="info-box">
+      <div class="info-box-icon"><i class="fas fa-shield-halved"></i></div>
+      <h4>Safety First</h4>
+      <p>Designed to reduce missed detections in low-visibility environments, where small delays can lead to accidents or unsafe decisions.</p>
+    </div>
+    <div class="info-box">
+      <div class="info-box-icon"><i class="fas fa-eye"></i></div>
+      <h4>Clarity Support</h4>
+      <p>Reveals vehicles, people, and obstacles that are harder to notice when fog reduces contrast and scene detail.</p>
+    </div>
+    <div class="info-box">
+      <div class="info-box-icon"><i class="fas fa-bolt"></i></div>
+      <h4>Practical Deployment</h4>
+      <p>Built for real image and video inputs with a refined interface that keeps the workflow simple, stable, and professional.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PURPOSE -->
+<section id="need" class="section">
+  <p class="s-eyebrow">Purpose</p>
+  <h2 class="section-title">Why this<br><em>matters.</em></h2>
+  <p class="section-desc">
+    In traffic scenes, missed detections can delay braking, reduce situational awareness, and increase the risk of accidents. A stable detection platform supports better visibility for monitoring, research, and intelligent decision systems.
+  </p>
+  <div class="story-grid">
+    <div class="story-box">
+      <div class="story-num">01</div>
+      <h4>Accident Prevention</h4>
+      <p>When visibility is weak, even a single missed road user matters. This system helps surface objects that should not be overlooked, keeping every scene accounted for.</p>
+    </div>
+    <div class="story-box">
+      <div class="story-num">02</div>
+      <h4>Faster Decisions</h4>
+      <p>Clear detection output allows operators or downstream systems to understand a scene faster and act with greater confidence — even under difficult conditions.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DETECTION -->
+<section id="detection" class="section">
+  <p class="s-eyebrow">Detection</p>
+  <h2 class="section-title">Upload &amp;<br><em>generate output.</em></h2>
+  <p class="section-desc">
+    Upload an image or video. Your file is processed by the backend and the result appears in the clean before-and-after layout alongside your original.
+  </p>
+
+  {% if error %}
+  <div style="margin-top:1.5rem;padding:1.1rem 1.4rem;border-radius:14px;border:1px solid rgba(248,113,113,.22);background:rgba(248,113,113,.08);color:#fecaca;font-size:.95rem;">{{ error }}</div>
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data">
+  <div class="detect-grid">
+
+    <!-- LEFT: Upload -->
+    <div class="panel">
+      <div class="card-head">
+        <span class="dot dot-ice"></span>
+        <span class="card-head-title">Media Upload</span>
+      </div>
+      <div class="upload-zone">
+        <input type="file" name="file" accept="image/*,video/*" required>
+        <div>
+          <div class="upload-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+          <div class="upload-copy">
+            <strong>Select Image or Video</strong>
+            <div class="upload-note">JPG · PNG · WEBP · MP4 · AVI · MOV · MKV</div>
+          </div>
+        </div>
+      </div>
+      <button class="run-btn" type="submit">
+        <i class="fas fa-wand-magic-sparkles"></i> Run Detection
+      </button>
+    </div>
+
+    <!-- RIGHT: Results -->
+    <div class="results-panel">
+      <div class="card-head">
+        <span class="dot dot-green"></span>
+        <span class="card-head-title">Before &amp; After</span>
+      </div>
+      <div class="ba-grid">
+        <!-- BEFORE -->
+        <div class="ba-pane">
+          <div class="ba-label">Before</div>
+          <div class="ba-content">
+            {% if before_image %}
+              <img src="{{ url_for('static', filename='uploads/' + before_image) }}?t={{ range(1,10000)|random }}">
+            {% elif before_video %}
+              <video controls><source src="{{ url_for('static', filename='uploads/' + before_video) }}"></video>
+            {% else %}
+              <div class="empty-state"><i class="fas fa-image"></i><span>Awaiting upload</span></div>
+            {% endif %}
+          </div>
+        </div>
+        <!-- AFTER -->
+        <div class="ba-pane">
+          <div class="ba-label">After</div>
+          <div class="ba-content">
+            {% if after_image %}
+              <img src="{{ url_for('static', filename='outputs/' + after_image) }}?t={{ range(1,10000)|random }}">
+            {% elif after_video %}
+              <video controls><source src="{{ url_for('static', filename='outputs/' + after_video) }}?t={{ range(1,10000)|random }}"></video>
+            {% else %}
+              <div class="empty-state"><i class="fas fa-wand-magic-sparkles" style="font-size:1.6rem;opacity:.35"></i><span>Results appear here</span></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </form>
+</section>
+
+<div class="divider"></div>
+
+<!-- FOLLOW -->
+<section id="follow" class="section">
+  <p class="s-eyebrow">Community</p>
+  <h2 class="section-title">Follow our<br><em>journey.</em></h2>
+  <p class="section-desc">
+    Stay connected for updates, new features, and improvements as FogVision grows into a more advanced vision platform.
+  </p>
+  <div class="follow-wrap">
+    <h4>Stay in the loop</h4>
+    <p>Follow our social pages for demos, technical updates, and new releases. Share your feedback, explore the system, and stay tuned for the next version of FogVision.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">Fog<span>Vision</span></div>
+    <div class="footer-copy">Designed &amp; Developed by Anwesha Sahoo · © 2026</div>
+  </div>
+  <div class="footer-note">
+    A refined detection platform focused on clarity, safety, and stable media processing in low-visibility environments.
+  </div>
+</footer>
+
+</body>
+</html>
