@@ -5,9 +5,7 @@ The system supports both image and video inference through a Flask-based web app
 
 Overview:
 
-Low-visibility environments significantly reduce the reliability of traditional vision systems used in traffic monitoring and intelligent transportation. FogVision addresses this challenge by training YOLOv8 models directly on real-world foggy datasets instead of relying entirely on artificially enhanced imagery.<img width="942" height="662" alt="Screenshot 2026-05-23 at 9 21 49 PM" src="https://github.com/user-attachments/assets/53c2185c-4d05-48ad-a367-24ae552cb582" />
-<img width="942" height="662" alt="Screenshot 2026-05-23 at 9 21 49 PM" src="https://github.com/user-attachments/assets/bb716aa0-5517-4c6d-ae39-51a1f4b927cd" />
-<img width="942" height="662" alt="Screenshot 2026-05-23 at 9 21 49 PM" src="https://github.com/user-attachments/assets/a7753463-f024-4fc6-bc93-9e8dd3fdd661" />
+Low-visibility environments significantly reduce the reliability of traditional vision systems used in traffic monitoring and intelligent transportation. FogVision addresses this challenge by training YOLOv8 models directly on real-world foggy datasets instead of relying entirely on artificially enhanced imagery.
 
 
 The project explores multiple experimental stages including:
@@ -18,7 +16,6 @@ CLAHE-based enhancement experiments
 Optimized YOLOv8s training
 Real-time frontend deployment
 Lightweight post-detection enhancement
-
 The final pipeline prioritizes robust real-world detection consistency while maintaining efficient inference speed.
 
 Technologies Used:
@@ -47,7 +44,6 @@ YOLOv8n	Baseline lightweight experimentation
 YOLOv8s	Final optimized detection model
 
 YOLOv8s was selected for the final pipeline due to:
-
 stronger feature extraction
 improved multi-scale learning
 better localization performance
@@ -55,7 +51,6 @@ higher detection robustness under foggy conditions
 Dataset
 
 The model was trained on real-world foggy traffic datasets containing multiple object classes including:
-
 Car
 Bus
 Truck
@@ -66,7 +61,6 @@ Person
 Train
 
 The dataset included:
-
 dense fog conditions
 varying visibility levels
 real traffic scenes
@@ -96,12 +90,12 @@ Scaling and flipping
 close_mosaic = 10
 
 The optimized model demonstrated improved:
-
 mAP
 precision
 localization quality
 robustness under low visibility
 Enhancement Experiments
+
 
 CLAHE-based enhancement experiments were conducted to improve visibility and local contrast under foggy conditions.
 
@@ -156,6 +150,16 @@ python app.py
 
 Open in browser:
 http://127.0.0.1:5500
+
+## Interface Preview
+<img width="602" height="416" alt="image" src="https://github.com/user-attachments/assets/c2a8eba4-2607-43bf-b449-c63f28737734" />
+
+## Detection Results
+<img width="785" height="734" alt="image" src="https://github.com/user-attachments/assets/a7a9217d-66a6-4ac8-9420-1925be1968b1" />
+
+## Training Metrics
+<img width="675" height="437" alt="image" src="https://github.com/user-attachments/assets/f07229c7-93fe-4499-9809-3975cc26eb5d" />
+
 
 Future Scope:
 
