@@ -152,10 +152,10 @@ Open in browser:
 http://127.0.0.1:5500
 
 ## Interface Preview
-<img width="602" height="416" alt="image" src="https://github.com/user-attachments/assets/c2a8eba4-2607-43bf-b449-c63f28737734" />
+<img width="785" height="734" alt="image" src="https://github.com/user-attachments/assets/a7a9217d-66a6-4ac8-9420-1925be1968b1" />
 
 ## Detection Results
-<img width="785" height="734" alt="image" src="https://github.com/user-attachments/assets/a7a9217d-66a6-4ac8-9420-1925be1968b1" />
+<img width="602" height="416" alt="image" src="https://github.com/user-attachments/assets/c2a8eba4-2607-43bf-b449-c63f28737734" />
 
 ## Training Metrics
 <img width="675" height="437" alt="image" src="https://github.com/user-attachments/assets/f07229c7-93fe-4499-9809-3975cc26eb5d" />
